@@ -9,7 +9,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #11161c;
     --panel: #1a2129;
     --text: #e6edf3;
@@ -17,7 +17,19 @@
     --accent: #5fb3d9;
     --accent-soft: #1f3a49;
     --border: #2a333d;
+    color-scheme: dark;
   }
+}
+
+:root[data-theme="dark"] {
+  --bg: #11161c;
+  --panel: #1a2129;
+  --text: #e6edf3;
+  --muted: #94a1ae;
+  --accent: #5fb3d9;
+  --accent-soft: #1f3a49;
+  --border: #2a333d;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -34,7 +46,9 @@ body {
 main {
   max-width: 480px;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
 header { text-align: center; }
