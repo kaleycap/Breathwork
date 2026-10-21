@@ -41,7 +41,7 @@ const PATTERNS = {
   },
   custom: {
     name: "Custom",
-    description: "Set your own timings in seconds. Use 0 to skip a step.",
+    description: "Start from an even 4-4-4-4 and build your own rhythm.",
     phases: [
       { label: "Breathe in", seconds: 4, size: MAX_SIZE },
       { label: "Hold", seconds: 4, size: MAX_SIZE },
@@ -50,6 +50,11 @@ const PATTERNS = {
     ],
   },
 };
+
+// Remember each pattern's original timings so they can be restored after editing.
+const DEFAULT_SECONDS = Object.fromEntries(
+  Object.entries(PATTERNS).map(([key, pattern]) => [key, pattern.phases.map((p) => p.seconds)])
+);
 
 const $ = (id) => document.getElementById(id);
 const circle = $("circle");
@@ -62,7 +67,8 @@ const durationSelect = $("duration");
 const soundToggle = $("sound");
 const startBtn = $("start");
 const resetBtn = $("reset");
-const customEl = $("custom");
+const timingsEl = $("timings");
+const restoreBtn = $("restore");
 
 const state = {
   running: false,
@@ -205,23 +211,40 @@ function reset() {
 // Changing pattern mid-session would desync the phases, so lock it while running.
 function setControlsDisabled(disabled) {
   patternSelect.disabled = disabled;
-  customEl.querySelectorAll("input").forEach((input) => (input.disabled = disabled));
+  restoreBtn.disabled = disabled;
+  timingsEl.querySelectorAll("input").forEach((input) => (input.disabled = disabled));
 }
 
 function showPattern() {
   const pattern = PATTERNS[patternSelect.value];
   $("description").textContent = pattern.description;
-  customEl.hidden = patternSelect.value !== "custom";
+  timingsEl.replaceChildren(
+    ...pattern.phases.map((phase, index) => {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      Object.assign(input, { type: "number", min: 0, max: 30, step: 0.5, value: phase.seconds });
+      input.dataset.phase = index;
+      label.append(phase.label, input);
+      return label;
+    })
+  );
 }
 
 for (const [key, pattern] of Object.entries(PATTERNS)) {
   patternSelect.add(new Option(pattern.name, key));
 }
 
-customEl.addEventListener("input", (event) => {
+// Setting a step to 0 skips it, e.g. to drop the holds from box breathing.
+timingsEl.addEventListener("input", (event) => {
   const index = Number(event.target.dataset.phase);
-  const seconds = Math.min(20, Math.max(0, Number(event.target.value) || 0));
-  PATTERNS.custom.phases[index].seconds = seconds;
+  const seconds = Math.min(30, Math.max(0, Number(event.target.value) || 0));
+  PATTERNS[patternSelect.value].phases[index].seconds = seconds;
+});
+
+restoreBtn.addEventListener("click", () => {
+  const key = patternSelect.value;
+  PATTERNS[key].phases.forEach((phase, i) => (phase.seconds = DEFAULT_SECONDS[key][i]));
+  showPattern();
 });
 
 patternSelect.addEventListener("change", () => {

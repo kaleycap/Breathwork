@@ -32,12 +32,11 @@
       <select id="pattern"></select>
       <p class="description" id="description"></p>
 
-      <div class="custom" id="custom" hidden>
-        <label>Inhale <input type="number" min="0" max="20" value="4" data-phase="0"></label>
-        <label>Hold <input type="number" min="0" max="20" value="4" data-phase="1"></label>
-        <label>Exhale <input type="number" min="0" max="20" value="4" data-phase="2"></label>
-        <label>Hold <input type="number" min="0" max="20" value="4" data-phase="3"></label>
+      <div class="timings-header">
+        <span>Seconds per step</span>
+        <button type="button" id="restore" class="link">Restore defaults</button>
       </div>
+      <div class="timings" id="timings"></div>
 
       <label for="duration">Session length</label>
       <select id="duration">
