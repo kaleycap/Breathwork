@@ -128,6 +128,26 @@ function beep(frequency) {
   osc.stop(now + 0.45);
 }
 
+// Keep the phone screen on during a session. Not every browser supports this,
+// and the browser drops the lock whenever the page is hidden.
+let wakeLock = null;
+
+async function keepAwake() {
+  try {
+    wakeLock = await navigator.wakeLock?.request("screen");
+    if (!state.running) allowSleep(); // paused while the request was pending
+  } catch {}
+}
+
+function allowSleep() {
+  wakeLock?.release().catch(() => {});
+  wakeLock = null;
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && state.running) keepAwake();
+});
+
 function activePhases() {
   return PATTERNS[patternSelect.value].phases.filter((p) => p.seconds > 0);
 }
@@ -207,6 +227,7 @@ function start() {
     phaseEl.textContent = activePhases()[state.phaseIndex].label;
   }
   startBtn.textContent = "Pause";
+  keepAwake();
   setControlsDisabled(true);
   state.frame = requestAnimationFrame(tick);
 }
@@ -217,6 +238,7 @@ function pause() {
   cancelAnimationFrame(state.frame);
   phaseEl.textContent = "Paused";
   startBtn.textContent = "Resume";
+  allowSleep();
 }
 
 function finish() {
@@ -226,6 +248,7 @@ function finish() {
 }
 
 function reset() {
+  allowSleep();
   state.running = false;
   cancelAnimationFrame(state.frame);
   Object.assign(state, { phaseIndex: 0, phaseStart: 0, elapsed: 0, cycles: 0, size: MIN_SIZE });

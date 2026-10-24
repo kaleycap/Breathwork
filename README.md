@@ -11,6 +11,13 @@ python3 -m http.server 8000
 # then visit http://localhost:8000
 ```
 
+## Install on iPhone
+
+1. Open the site in Safari.
+2. Tap **Share**, then **Add to Home Screen**.
+
+It then opens full screen from its own icon. Custom timings are saved separately on each phone.
+
 ## Features
 
 - Animated circle that grows on the inhale and shrinks on the exhale
@@ -20,6 +27,7 @@ python3 -m http.server 8000
 - Session length (1, 3, 5 or 10 minutes, or open-ended), with cycle and time counters
 - Optional soft tones at each phase change
 - Pause/resume (also with the space bar), plus light and dark mode
+- Keeps the screen on during a session, where the browser supports it
 
 ## Files
 
