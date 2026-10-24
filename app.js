@@ -22,6 +22,15 @@ const PATTERNS = {
       { label: "Breathe out", seconds: 8, size: MIN_SIZE },
     ],
   },
+  long: {
+    name: "3-10-6 extended hold",
+    description: "Short inhale, long hold, slow exhale. A deeper, more demanding rhythm.",
+    phases: [
+      { label: "Breathe in", seconds: 3, size: MAX_SIZE },
+      { label: "Hold", seconds: 10, size: MAX_SIZE },
+      { label: "Breathe out", seconds: 6, size: MIN_SIZE },
+    ],
+  },
   coherent: {
     name: "Coherent breathing (5.5-5.5)",
     description: "About 5.5 breaths per minute, no holds. Calm and balanced.",
@@ -55,6 +64,27 @@ const PATTERNS = {
 const DEFAULT_SECONDS = Object.fromEntries(
   Object.entries(PATTERNS).map(([key, pattern]) => [key, pattern.phases.map((p) => p.seconds)])
 );
+
+// Custom timings are saved in the browser so they're still there next visit.
+// Storage can be unavailable (e.g. private browsing), so failures are ignored.
+const CUSTOM_KEY = "breathwork.customSeconds";
+
+function loadCustom() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CUSTOM_KEY));
+    if (!Array.isArray(saved)) return;
+    PATTERNS.custom.phases.forEach((phase, i) => {
+      const seconds = Number(saved[i]);
+      if (Number.isFinite(seconds)) phase.seconds = Math.min(30, Math.max(0, seconds));
+    });
+  } catch {}
+}
+
+function saveCustom() {
+  try {
+    localStorage.setItem(CUSTOM_KEY, JSON.stringify(PATTERNS.custom.phases.map((p) => p.seconds)));
+  } catch {}
+}
 
 const $ = (id) => document.getElementById(id);
 const circle = $("circle");
@@ -239,11 +269,13 @@ timingsEl.addEventListener("input", (event) => {
   const index = Number(event.target.dataset.phase);
   const seconds = Math.min(30, Math.max(0, Number(event.target.value) || 0));
   PATTERNS[patternSelect.value].phases[index].seconds = seconds;
+  if (patternSelect.value === "custom") saveCustom();
 });
 
 restoreBtn.addEventListener("click", () => {
   const key = patternSelect.value;
   PATTERNS[key].phases.forEach((phase, i) => (phase.seconds = DEFAULT_SECONDS[key][i]));
+  if (key === "custom") saveCustom();
   showPattern();
 });
 
@@ -260,4 +292,5 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+loadCustom();
 showPattern();
