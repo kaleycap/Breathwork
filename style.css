@@ -6,6 +6,8 @@
   --accent: #3a8fb7;
   --accent-soft: #cfe6f1;
   --border: #dde3e8;
+  --circle: #36543b;
+  --on-circle: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -76,18 +78,18 @@ h1 { margin: 0; font-size: 1.75rem; font-weight: 600; }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, var(--accent-soft), var(--accent));
-  transform: scale(0.4);
-  opacity: 0.85;
+  background: var(--circle);
+  transform: scale(0.55);
 }
 
 .readout {
   position: relative;
+  max-width: 50%;
   text-align: center;
-  color: var(--text);
+  color: var(--on-circle);
 }
-.phase { font-size: 1.5rem; font-weight: 600; }
-.count { font-size: 2.5rem; font-variant-numeric: tabular-nums; min-height: 1.2em; }
+.phase { font-size: 1.25rem; font-weight: 600; line-height: 1.25; text-wrap: balance; }
+.count { font-size: 2.25rem; font-variant-numeric: tabular-nums; min-height: 1.2em; }
 
 .stats {
   display: flex;

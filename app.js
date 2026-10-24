@@ -1,5 +1,5 @@
 // Each pattern is a list of phases. `size` is the circle scale at the end of the phase.
-const MIN_SIZE = 0.4;
+const MIN_SIZE = 0.55; // large enough to hold the step name
 const MAX_SIZE = 1;
 
 const PATTERNS = {
