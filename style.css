@@ -41,7 +41,10 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Alegreya Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.0625rem;
+  /* Alegreya defaults to old-style figures; use even, aligned digits for the timers */
+  font-variant-numeric: lining-nums tabular-nums;
   line-height: 1.5;
 }
 
@@ -54,7 +57,7 @@ main {
 }
 
 header { text-align: center; }
-h1 { margin: 0; font-size: 1.75rem; font-weight: 600; }
+h1 { margin: 0; font-size: 1.75rem; font-weight: 700; }
 .subtitle { margin: 4px 0 0; color: var(--muted); }
 
 .stage {
@@ -88,8 +91,8 @@ h1 { margin: 0; font-size: 1.75rem; font-weight: 600; }
   text-align: center;
   color: var(--on-circle);
 }
-.phase { font-size: 1.25rem; font-weight: 600; line-height: 1.25; text-wrap: balance; }
-.count { font-size: 2.25rem; font-variant-numeric: tabular-nums; min-height: 1.2em; }
+.phase { font-size: 1.25rem; font-weight: 700; line-height: 1.25; text-wrap: balance; }
+.count { font-size: 2.25rem; min-height: 1.2em; }
 
 .stats {
   display: flex;
@@ -97,7 +100,7 @@ h1 { margin: 0; font-size: 1.75rem; font-weight: 600; }
   margin-top: 16px;
   color: var(--muted);
 }
-.stats strong { color: var(--text); font-variant-numeric: tabular-nums; }
+.stats strong { color: var(--text); }
 
 .controls {
   display: flex;
@@ -156,7 +159,7 @@ button.link:disabled { color: var(--muted); cursor: default; }
 button {
   flex: 1;
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid var(--border);
