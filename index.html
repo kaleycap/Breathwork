@@ -22,16 +22,16 @@
   <main>
     <header>
       <h1>Breathwork</h1>
-      <p class="subtitle">Follow the circle. Breathe in as it grows, out as it shrinks.</p>
+      <p class="subtitle">Follow the circle. Breathe in as it grows, out as it shrinks to a dot.</p>
     </header>
 
     <section class="stage" aria-live="polite">
       <div class="ring">
         <div class="circle" id="circle"></div>
-        <div class="readout">
-          <div class="phase" id="phase">Ready</div>
-          <div class="count" id="count"></div>
-        </div>
+      </div>
+      <div class="readout">
+        <div class="phase" id="phase">Ready</div>
+        <div class="count" id="count"></div>
       </div>
       <div class="stats">
         <span>Cycles <strong id="cycles">0</strong></span>
@@ -54,12 +54,33 @@
       <select id="duration">
         <option value="0">Until I stop</option>
         <option value="60">1 minute</option>
+        <option value="120">2 minutes</option>
         <option value="180">3 minutes</option>
         <option value="300" selected>5 minutes</option>
+        <option value="420">7 minutes</option>
         <option value="600">10 minutes</option>
+        <option value="900">15 minutes</option>
+        <option value="1200">20 minutes</option>
+        <option value="1800">30 minutes</option>
+        <option value="2700">45 minutes</option>
+        <option value="3600">60 minutes</option>
       </select>
 
-      <label class="toggle"><input type="checkbox" id="sound" checked> Sound cues</label>
+      <label for="gap">Pause between steps</label>
+      <select id="gap">
+        <option value="0">None</option>
+        <option value="0.5" selected>0.5 seconds</option>
+        <option value="1">1 second</option>
+        <option value="1.5">1.5 seconds</option>
+        <option value="2">2 seconds</option>
+      </select>
+
+      <label for="cues">Guidance</label>
+      <select id="cues">
+        <option value="voice" selected>Voice</option>
+        <option value="tones">Tones</option>
+        <option value="off">Silent</option>
+      </select>
 
       <div class="buttons">
         <button id="start" class="primary">Start</button>

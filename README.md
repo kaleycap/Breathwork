@@ -20,12 +20,14 @@ It then opens full screen from its own icon. Custom timings are saved separately
 
 ## Features
 
-- Animated circle that grows on the inhale and shrinks on the exhale
+- Animated circle that grows on the inhale and shrinks to a dot on the exhale
 - Patterns: box (4-4-4-4), 4-7-8, 3-10-6, coherent (5.5-5.5), physiological sigh, and custom
-- Custom timings are remembered in the browser between visits
 - Adjustable seconds for each step (breathe in, hold, breathe out) on every pattern; set a step to 0 to skip it
-- Session length (1, 3, 5 or 10 minutes, or open-ended), with cycle and time counters
-- Optional soft tones at each phase change
+- Custom timings are remembered in the browser between visits
+- 5-second "Get ready" countdown before each session
+- Optional short pause between steps (0.5 seconds by default)
+- Spoken guidance using the device's built-in voice, or tones, or silent
+- Session lengths from 1 to 60 minutes, or open-ended, with cycle and time counters
 - Pause/resume (also with the space bar), plus light and dark mode
 - Keeps the screen on during a session, where the browser supports it
 

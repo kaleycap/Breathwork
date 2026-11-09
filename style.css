@@ -7,7 +7,6 @@
   --accent-text: #36543b;
   --border: #dde3e8;
   --circle: #36543b;
-  --on-circle: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,17 +79,15 @@ h1 { margin: 0; font-size: 1.75rem; font-weight: 600; }
   inset: 0;
   border-radius: 50%;
   background: var(--circle);
-  transform: scale(0.55);
+  transform: scale(0.06);
 }
 
 .readout {
-  position: relative;
-  max-width: 50%;
+  margin-top: 16px;
   text-align: center;
-  color: var(--on-circle);
 }
-.phase { font-size: 1.25rem; font-weight: 600; line-height: 1.25; text-wrap: balance; }
-.count { font-size: 2.25rem; min-height: 1.2em; }
+.phase { font-size: 1.5rem; font-weight: 600; line-height: 1.25; min-height: 1.25em; }
+.count { font-size: 2.5rem; line-height: 1.2; min-height: 1.2em; }
 
 .stats {
   display: flex;
@@ -149,9 +146,6 @@ button.link {
   font-weight: 500;
 }
 button.link:disabled { color: var(--muted); cursor: default; }
-
-.toggle { display: flex; align-items: center; gap: 8px; font-weight: 400; margin-top: 4px; }
-.toggle input { accent-color: var(--accent-text); }
 
 .buttons { display: flex; gap: 8px; margin-top: 8px; }
 
