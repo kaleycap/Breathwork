@@ -41,13 +41,13 @@ It then opens full screen from its own icon. Custom timings are saved separately
 
 ## Voice
 
-The clips were generated with [Piper](https://github.com/rhasspy/piper) using the British English
-"Northern English Male" voice, trained on the [OpenSLR 83](http://www.openslr.org/83/) recordings
-(CC BY-SA 4.0).
+The clips were generated with [Piper](https://github.com/rhasspy/piper) using the American English
+"Ryan" voice (high quality), trained on the [RyanSpeech](https://www.kaggle.com/datasets/roholazandie/ryanspeech)
+recordings. Those are licensed CC BY-NC-SA 4.0, so this voice is for non-commercial use only.
 
 To regenerate them with another Piper voice, download its `.onnx` and `.onnx.json` files and run:
 
 ```sh
 pip install piper-tts   # also needs ffmpeg
-python3 tools/make_voice.py path/to/voice.onnx 1.35   # second number is pace: higher is slower
+python3 tools/make_voice.py path/to/voice.onnx 1.15   # second number is pace: higher is slower
 ```

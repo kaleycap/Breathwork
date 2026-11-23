@@ -43,7 +43,7 @@ def render(voice, text, mp3, pace):
         with wave.open(tmp.name, "wb") as w:
             voice.synthesize_wav(text, w, syn_config=SynthesisConfig(length_scale=pace))
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", tmp.name, "-af", TRIM,
-                        "-ac", "1", "-ar", "22050", "-b:a", "64k", str(mp3)], check=True)
+                        "-ac", "1", "-ar", "22050", "-b:a", "96k", str(mp3)], check=True)
     duration = float(subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(mp3)],
         capture_output=True, text=True).stdout)
