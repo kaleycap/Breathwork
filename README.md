@@ -37,8 +37,17 @@ It then opens full screen from its own icon. Custom timings are saved separately
 - `style.css`: styles
 - `app.js`: breathing patterns and timer logic. Add a pattern by adding an entry to `PATTERNS`.
 - `voice/`: recorded voice clips, one per phrase and number (1–30)
+- `tools/make_voice.py`: regenerates the voice clips
 
 ## Voice
 
 The clips were generated with [Piper](https://github.com/rhasspy/piper) using the British English
-"Cori" voice, which was trained on public-domain LibriVox recordings.
+"Northern English Male" voice, trained on the [OpenSLR 83](http://www.openslr.org/83/) recordings
+(CC BY-SA 4.0).
+
+To regenerate them with another Piper voice, download its `.onnx` and `.onnx.json` files and run:
+
+```sh
+pip install piper-tts   # also needs ffmpeg
+python3 tools/make_voice.py path/to/voice.onnx 1.35   # second number is pace: higher is slower
+```
