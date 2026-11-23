@@ -112,7 +112,7 @@ const state = {
   pausedAt: 0,     // ms into the current step when paused
   elapsed: 0,      // ms of breathing, excluding the countdown and pauses
   lastTick: 0,
-  lastCount: null, // last countdown number shown, so each one is announced once
+  lastCount: null, // last number shown for the current step, so each is announced once
   cycles: 0,
   size: MIN_SIZE,  // circle scale at the start of the current phase
   frame: null,
@@ -122,6 +122,13 @@ const state = {
 
 let audioCtx = null;
 
+function getAudioCtx() {
+  try {
+    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+  } catch {}
+  return audioCtx;
+}
+
 // iPhones only allow sound that was set up during a tap, and mute web audio
 // when the silent switch is on unless the page asks to play like a media app.
 // Call this from the Start button's click.
@@ -130,8 +137,7 @@ function unlockAudio() {
     if (navigator.audioSession) navigator.audioSession.type = "playback";
   } catch {}
   try {
-    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
-    audioCtx.resume();
+    getAudioCtx().resume();
     const source = audioCtx.createBufferSource();
     source.buffer = audioCtx.createBuffer(1, 1, 22050);
     source.connect(audioCtx.destination);
@@ -154,17 +160,50 @@ function beep(frequency, duration = 0.5) {
   osc.stop(now + duration + 0.05);
 }
 
-// Spoken guidance uses the device's built-in text-to-speech voice.
-function say(text) {
-  if (cuesSelect.value !== "voice" || !window.speechSynthesis) return;
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.rate = 0.9;
-  speechSynthesis.speak(utterance);
+// Spoken guidance plays recorded clips from voice/, named after what they say
+// ("Breathe in" -> voice/breathe-in.mp3, 7 -> voice/7.mp3). Recordings play
+// through the same audio as the tones, which works on iPhones where the
+// built-in speech voice is often silent.
+const VOICE_PHRASES = ["Get ready", "Breathe in", "Hold", "Breathe out", "Sip in more", "Long breath out", "Well done"];
+const VOICE_NUMBERS = Array.from({ length: 30 }, (_, i) => String(i + 1));
+const voiceBuffers = new Map();
+let voiceSource = null;
+let voiceBusyUntil = 0; // audio clock time when the current clip finishes
+
+function loadVoice() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  for (const text of [...VOICE_PHRASES, ...VOICE_NUMBERS]) {
+    fetch(`voice/${text.toLowerCase().replaceAll(" ", "-")}.mp3`)
+      .then((response) => response.arrayBuffer())
+      .then((data) => ctx.decodeAudioData(data))
+      .then((buffer) => voiceBuffers.set(text, buffer))
+      .catch(() => {});
+  }
+}
+
+// Step names always play, cutting off anything before them. Counting numbers
+// are skipped rather than talk over a step name that is still being spoken.
+function say(text, { interrupt = true } = {}) {
+  if (cuesSelect.value !== "voice" || !audioCtx) return;
+  const buffer = voiceBuffers.get(text);
+  if (!buffer) return;
+  const now = audioCtx.currentTime;
+  if (!interrupt && now < voiceBusyUntil) return;
+  stopSpeaking();
+  voiceSource = audioCtx.createBufferSource();
+  voiceSource.buffer = buffer;
+  voiceSource.connect(audioCtx.destination);
+  voiceSource.start(now);
+  voiceBusyUntil = now + buffer.duration;
 }
 
 function stopSpeaking() {
-  window.speechSynthesis?.cancel();
+  try {
+    voiceSource?.stop();
+  } catch {}
+  voiceSource = null;
+  voiceBusyUntil = 0;
 }
 
 // Higher tone for inhaling, lower for exhaling, middle for holds.
@@ -221,13 +260,22 @@ function ease(t) {
 function beginStep(step, now) {
   state.step = step;
   state.stepStart = now;
+  state.lastCount = Math.ceil(step.seconds);
   phaseEl.textContent = step.label;
 }
 
 function startCountdown(now) {
   beginStep({ kind: "countdown", seconds: COUNTDOWN_SECONDS, label: "Get ready" }, now);
-  state.lastCount = null;
   say("Get ready");
+}
+
+// Count down each second out loud after the step name, matching the number on
+// screen, so the session can be followed with eyes closed.
+function announceCount(step, remaining) {
+  if (remaining === state.lastCount) return;
+  state.lastCount = remaining;
+  say(String(remaining), { interrupt: false });
+  if (step.kind === "countdown" && remaining <= 3) beep(880, 0.15);
 }
 
 function enterPhase(index, now) {
@@ -272,13 +320,7 @@ function tick(now) {
 
   if (step.kind === "countdown") {
     countEl.textContent = remaining;
-    if (remaining !== state.lastCount) {
-      state.lastCount = remaining;
-      if (remaining <= 3) {
-        say(String(remaining));
-        beep(880, 0.15);
-      }
-    }
+    announceCount(step, remaining);
   } else {
     state.elapsed += dt;
     elapsedEl.textContent = formatTime(state.elapsed);
@@ -287,6 +329,7 @@ function tick(now) {
   if (step.kind === "phase") {
     setCircle(step.from + (step.to - step.from) * ease(progress));
     countEl.textContent = remaining;
+    if (progress < 1) announceCount(step, remaining);
   } else if (step.kind === "gap") {
     countEl.textContent = "";
   }
@@ -407,3 +450,4 @@ document.addEventListener("keydown", (event) => {
 
 loadCustom();
 showPattern();
+loadVoice();

@@ -26,7 +26,7 @@ It then opens full screen from its own icon. Custom timings are saved separately
 - Custom timings are remembered in the browser between visits
 - 5-second "Get ready" countdown before each session
 - Optional short pause between steps (0.5 seconds by default)
-- Spoken guidance using the device's built-in voice, or tones, or silent
+- Voice guidance that names each step and counts down every second, so you can follow with your eyes closed; or tones, or silent
 - Session lengths from 1 to 60 minutes, or open-ended, with cycle and time counters
 - Pause/resume (also with the space bar), plus light and dark mode
 - Keeps the screen on during a session, where the browser supports it
@@ -36,3 +36,9 @@ It then opens full screen from its own icon. Custom timings are saved separately
 - `index.html`: page layout
 - `style.css`: styles
 - `app.js`: breathing patterns and timer logic. Add a pattern by adding an entry to `PATTERNS`.
+- `voice/`: recorded voice clips, one per phrase and number (1–30)
+
+## Voice
+
+The clips were generated with [Piper](https://github.com/rhasspy/piper) using the British English
+"Cori" voice, which was trained on public-domain LibriVox recordings.
