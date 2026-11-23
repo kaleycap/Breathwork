@@ -37,16 +37,22 @@ It then opens full screen from its own icon. Custom timings are saved separately
 - `style.css`: styles
 - `app.js`: breathing patterns and timer logic. Add a pattern by adding an entry to `PATTERNS`.
 - `voice/`: recorded voice clips, one per phrase and number (1–30)
-- `tools/make_voice.py`: regenerates the voice clips
+- `recordings/`: the ElevenLabs recordings the voice clips are cut from
+- `tools/split_recordings.py`: cuts `recordings/` into the voice clips
+- `tools/make_voice.py`: alternative: generates the voice clips with Piper
 
 ## Voice
 
-The clips were generated with [Piper](https://github.com/rhasspy/piper) using the British English
-"Cori" voice (high quality, `en_GB-cori-high`), which was trained on public-domain LibriVox recordings.
-
-To regenerate them with another Piper voice, download its `.onnx` and `.onnx.json` files and run:
+Voice by [ElevenLabs](https://elevenlabs.io): the "Nathaniel – Engaging, British and Calm" voice.
+The source recordings are in `recordings/` (three takes of 12, 12 and 13 phrases separated by
+pauses), cut into the clips in `voice/` with:
 
 ```sh
-pip install piper-tts   # also needs ffmpeg
-python3 tools/make_voice.py path/to/voice.onnx 1.15   # second number is pace: higher is slower
+python3 tools/split_recordings.py   # needs ffmpeg
 ```
+
+To change a phrase, regenerate that part in ElevenLabs with the same text and voice, replace the
+matching `recordings/partN.mp3`, and run the script again.
+
+`tools/make_voice.py` can instead generate the clips offline with a [Piper](https://github.com/rhasspy/piper)
+voice: `python3 tools/make_voice.py path/to/voice.onnx 1.15` (the number is pace; higher is slower).
